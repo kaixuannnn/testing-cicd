@@ -1,0 +1,19 @@
+image: node:alpine
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - ~/.npm
+
+stages:
+  - build
+
+before_script:
+  - npm ci --cache .npm --prefer-offline
+
+eas-build:
+  stage: build
+  only:
+    - master
+  script:
+    - apk add --no-cache bash
+    - EAS_NO_VCS=1 npx eas-cli build -p android --non-interactive
